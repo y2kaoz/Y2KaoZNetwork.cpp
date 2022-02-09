@@ -12,14 +12,18 @@ if(NOT APPLE)
 endif()
 
 add_library(${PROJECT_NAME} 
-    "include/Y2KaoZ/Network/Concepts/TriviallyCopyableStandardLayout.hpp"
+    "include/Y2KaoZ/Network/Buffers/NotEnoughData.hpp"
+    "include/Y2KaoZ/Network/Buffers/NotEnoughSpace.hpp"
     "include/Y2KaoZ/Network/Buffers/ReferenceCounted.hpp"
-    "src/Y2KaoZ/Network/Buffers/ReferenceCounted.cpp"
     "include/Y2KaoZ/Network/Buffers/SpanBufferReader.hpp"
-    "src/Y2KaoZ/Network/Buffers/SpanBufferReader.cpp"
     "include/Y2KaoZ/Network/Buffers/SpanBufferWriter.hpp"
-    "src/Y2KaoZ/Network/Buffers/SpanBufferWriter.cpp"
     "include/Y2KaoZ/Network/Buffers/VectBufferWriter.hpp"
+    "include/Y2KaoZ/Network/Concepts/TriviallyCopyableStandardLayout.hpp"
+    "src/Y2KaoZ/Network/Buffers/NotEnoughData.cpp"
+    "src/Y2KaoZ/Network/Buffers/NotEnoughSpace.cpp"
+    "src/Y2KaoZ/Network/Buffers/ReferenceCounted.cpp"
+    "src/Y2KaoZ/Network/Buffers/SpanBufferReader.cpp"
+    "src/Y2KaoZ/Network/Buffers/SpanBufferWriter.cpp"
     "src/Y2KaoZ/Network/Buffers/VectBufferWriter.cpp"
 )
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -Wconversion)

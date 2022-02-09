@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Y2KaoZ/Network/Buffers/NotEnoughData.hpp"
 #include "Y2KaoZ/Network/Concepts/TriviallyCopyableStandardLayout.hpp"
 #include "Y2KaoZ/Network/Visibility.hpp"
 #include <cstring>
@@ -14,49 +15,47 @@ using Y2KaoZ::Network::Concepts::TriviallyCopyableStandardLayoutType;
 
 class Y2KAOZNETWORK_EXPORT SpanBufferReader {
 public:
-  explicit SpanBufferReader(std::span<const std::byte> buffer, int start = 0);
-  [[nodiscard]] auto readed() const noexcept -> int;
-  [[nodiscard]] auto available() const -> int;
+  explicit SpanBufferReader(std::span<const std::byte> buffer, std::size_t start = 0);
+  [[nodiscard]] auto readed() const noexcept -> std::size_t;
+  [[nodiscard]] auto available() const -> std::size_t;
 
   template <TriviallyCopyableStandardLayoutContainer Container>
-  [[nodiscard]] auto read(Container& container) -> int {
-    const int size = gsl::narrow<int>(sizeof(Container::value_type) * container.size());
+  [[nodiscard]] auto read(Container& container) -> std::size_t {
+    const auto size = sizeof(Container::value_type) * container.size();
     if (size > 0) {
       if (available() < size) {
-        return available() - size;
+        throw NotEnoughData(size - available());
       }
       std::memcpy(std::data(container), &buffer_[readed_], size);
       readed_ += size;
-      Ensures(readed_ <= gsl::narrow<int>(buffer_.size()));
+      Ensures(readed_ <= buffer_.size());
     }
     return size;
   }
 
   template <TriviallyCopyableStandardLayoutType Type>
-  [[nodiscard]] auto availableFor(Type& value) -> int {
-    const int size = gsl::narrow<int>(sizeof(value));
+  [[nodiscard]] auto availableFor(Type& value) -> std::size_t {
+    const auto size = sizeof(value);
     if (size > 0) {
       if (available() < size) {
-        return available() - size;
+        throw NotEnoughData(size - available());
       }
       std::memcpy(&value, &buffer_[readed_], size);
       readed_ += size;
-      Ensures(readed_ <= gsl::narrow<int>(buffer_.size()));
+      Ensures(readed_ <= buffer_.size());
     }
     return size;
   }
 
 private:
   std::span<const std::byte> buffer_;
-  int readed_;
+  std::size_t readed_;
 };
 
 Y2KAOZNETWORK_EXPORT template <typename T>
 requires TriviallyCopyableStandardLayoutType<T> || TriviallyCopyableStandardLayoutContainer<T>
 inline auto operator>>(SpanBufferReader& buffer, T& value) -> SpanBufferReader& {
-  if (buffer.read(value) < 0) {
-    throw std::out_of_range("The read is out of the buffer range.");
-  }
+  buffer.read(value);
   return buffer;
 }
 
