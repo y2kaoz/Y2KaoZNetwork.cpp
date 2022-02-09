@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Y2KaoZ/Network/Concepts/TriviallyCopyableStandardLayout.hpp"
+#include "Y2KaoZ/Network/Visibility.hpp"
 #include <cstring>
 #include <gsl/gsl_util>
 #include <span>
@@ -11,7 +12,7 @@ namespace Y2KaoZ::Network::Buffers {
 using Y2KaoZ::Network::Concepts::TriviallyCopyableStandardLayoutContainer;
 using Y2KaoZ::Network::Concepts::TriviallyCopyableStandardLayoutType;
 
-class SpanBufferReader {
+class Y2KAOZNETWORK_EXPORT SpanBufferReader {
 public:
   explicit SpanBufferReader(std::span<const std::byte> buffer, int start = 0);
   [[nodiscard]] auto readed() const noexcept -> int;
@@ -31,14 +32,6 @@ public:
     return size;
   }
 
-  template <TriviallyCopyableStandardLayoutContainer Container>
-  auto operator>>(Container& container) -> SpanBufferReader& {
-    if (read(container) < 0) {
-      throw std::out_of_range("The read is out of the buffer range.");
-    }
-    return *this;
-  }
-
   template <TriviallyCopyableStandardLayoutType Type>
   [[nodiscard]] auto availableFor(Type& value) -> int {
     const int size = gsl::narrow<int>(sizeof(value));
@@ -53,17 +46,18 @@ public:
     return size;
   }
 
-  template <TriviallyCopyableStandardLayoutType Type>
-  auto operator>>(Type& value) -> SpanBufferReader& {
-    if (read(value) < 0) {
-      throw std::out_of_range("The read is out of the buffer range.");
-    }
-    return *this;
-  }
-
 private:
   std::span<const std::byte> buffer_;
   int readed_;
 };
+
+Y2KAOZNETWORK_EXPORT template <typename T>
+requires TriviallyCopyableStandardLayoutType<T> || TriviallyCopyableStandardLayoutContainer<T>
+inline auto operator>>(SpanBufferReader& buffer, T& value) -> SpanBufferReader& {
+  if (buffer.read(value) < 0) {
+    throw std::out_of_range("The read is out of the buffer range.");
+  }
+  return buffer;
+}
 
 } // namespace Y2KaoZ::Network::Buffers

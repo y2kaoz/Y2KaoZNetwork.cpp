@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Y2KaoZ/Network/Concepts/TriviallyCopyableStandardLayout.hpp"
+#include "Y2KaoZ/Network/Visibility.hpp"
 #include <cstring>
 #include <gsl/gsl_assert>
 #include <gsl/gsl_util>
@@ -14,7 +15,7 @@ namespace Y2KaoZ::Network::Buffers {
 using Y2KaoZ::Network::Concepts::TriviallyCopyableStandardLayoutContainer;
 using Y2KaoZ::Network::Concepts::TriviallyCopyableStandardLayoutType;
 
-class VectBufferWriter {
+class Y2KAOZNETWORK_EXPORT VectBufferWriter {
   explicit VectBufferWriter(gsl::not_null<std::vector<std::byte>*> vector, int start = 0);
   [[nodiscard]] auto written() const noexcept -> int;
   [[nodiscard]] auto available() const -> int;
@@ -33,12 +34,6 @@ class VectBufferWriter {
     return size;
   }
 
-  template <TriviallyCopyableStandardLayoutContainer Container>
-  auto operator<<(const Container& container) -> VectBufferWriter& {
-    write(container);
-    return *this;
-  }
-
   template <TriviallyCopyableStandardLayoutType Type>
   auto write(const Type& value) -> int {
     const int size = gsl::narrow<int>(sizeof(value));
@@ -53,15 +48,16 @@ class VectBufferWriter {
     return size;
   }
 
-  template <TriviallyCopyableStandardLayoutType Type>
-  auto operator<<(const Type& value) -> VectBufferWriter& {
-    write(value);
-    return *this;
-  }
-
 private:
   std::vector<std::byte>* vector_;
   int written_;
 };
+
+Y2KAOZNETWORK_EXPORT template <typename T>
+requires TriviallyCopyableStandardLayoutType<T> || TriviallyCopyableStandardLayoutContainer<T>
+auto operator<<(VectBufferWriter& buffer, const T& value) -> VectBufferWriter& {
+  buffer.write(value);
+  return buffer;
+}
 
 } // namespace Y2KaoZ::Network::Buffers
