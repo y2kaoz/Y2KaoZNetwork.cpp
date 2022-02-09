@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Y2KaoZ/Network/Concepts/TriviallyCopyableStandardLayout.hpp"
+#include "Y2KaoZ/Network/Visibility.hpp"
 #include <boost/asio/buffer.hpp>
 #include <memory>
 #include <vector>
@@ -10,7 +11,7 @@ namespace Y2KaoZ::Network::Buffers {
 using Y2KaoZ::Network::Concepts::TriviallyCopyableStandardLayoutContainer;
 using Y2KaoZ::Network::Concepts::TriviallyCopyableStandardLayoutType;
 
-class ReferenceCounted {
+class Y2KAOZNETWORK_EXPORT ReferenceCounted {
 public:
   using value_type = boost::asio::const_buffer;
   using const_iterator = const boost::asio::const_buffer*;
