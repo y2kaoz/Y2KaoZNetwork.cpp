@@ -20,8 +20,8 @@ public:
   [[nodiscard]] auto available() const -> std::size_t;
 
   template <TriviallyCopyableStandardLayoutContainer Container>
-  [[nodiscard]] auto read(Container& container) -> std::size_t {
-    const auto size = sizeof(Container::value_type) * container.size();
+  auto read(Container& container) -> std::size_t {
+    const auto size = sizeof(typename Container::value_type) * container.size();
     if (size > 0) {
       if (available() < size) {
         throw NotEnoughData(size - available());
@@ -34,7 +34,7 @@ public:
   }
 
   template <TriviallyCopyableStandardLayoutType Type>
-  [[nodiscard]] auto read(Type& value) -> std::size_t {
+  auto read(Type& value) -> std::size_t {
     const auto size = sizeof(value);
     if (size > 0) {
       if (available() < size) {

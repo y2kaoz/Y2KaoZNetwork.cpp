@@ -21,7 +21,7 @@ public:
 
   template <TriviallyCopyableStandardLayoutContainer Container>
   auto write(const Container& container) -> std::size_t {
-    const auto size = sizeof(Container::value_type) * container.size();
+    const auto size = sizeof(typename Container::value_type) * container.size();
     if (size > 0) {
       if (available() < size) {
         throw NotEnoughSpace(size - available());
