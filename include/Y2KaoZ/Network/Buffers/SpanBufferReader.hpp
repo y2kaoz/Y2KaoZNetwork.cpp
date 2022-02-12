@@ -34,7 +34,7 @@ public:
   }
 
   template <TriviallyCopyableStandardLayoutType Type>
-  [[nodiscard]] auto availableFor(Type& value) -> std::size_t {
+  [[nodiscard]] auto read(Type& value) -> std::size_t {
     const auto size = sizeof(value);
     if (size > 0) {
       if (available() < size) {
