@@ -15,6 +15,7 @@ using Y2KaoZ::Network::Concepts::TriviallyCopyableStandardLayoutContainer;
 using Y2KaoZ::Network::Concepts::TriviallyCopyableStandardLayoutType;
 
 class Y2KAOZNETWORK_EXPORT VectBufferWriter {
+public:
   explicit VectBufferWriter(gsl::not_null<std::vector<std::byte>*> vector, std::size_t start = 0);
   [[nodiscard]] auto written() const noexcept -> std::size_t;
   [[nodiscard]] auto available() const -> std::size_t;
