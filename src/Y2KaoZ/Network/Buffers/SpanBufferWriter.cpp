@@ -15,4 +15,10 @@ auto SpanBufferWriter::available() const -> std::size_t {
   return buffer_.size() - written();
 }
 
+void SpanBufferWriter::seek(std::size_t index) {
+  Expects(index <= buffer_.size());
+  written_ = index;
+  Ensures(written_ <= buffer_.size());
+}
+
 } // namespace Y2KaoZ::Network::Buffers

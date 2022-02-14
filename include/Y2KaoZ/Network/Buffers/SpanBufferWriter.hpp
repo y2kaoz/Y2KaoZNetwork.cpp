@@ -18,6 +18,7 @@ public:
   explicit SpanBufferWriter(std::span<std::byte> buffer, std::size_t start = 0);
   [[nodiscard]] auto written() const noexcept -> std::size_t;
   [[nodiscard]] auto available() const -> std::size_t;
+  void seek(std::size_t index);
 
   template <TriviallyCopyableStandardLayoutContainer Container>
   auto write(const Container& container) -> std::size_t {

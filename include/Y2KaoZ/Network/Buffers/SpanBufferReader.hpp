@@ -18,6 +18,7 @@ public:
   explicit SpanBufferReader(std::span<const std::byte> buffer, std::size_t start = 0);
   [[nodiscard]] auto readed() const noexcept -> std::size_t;
   [[nodiscard]] auto available() const -> std::size_t;
+  void seek(std::size_t index);
 
   template <TriviallyCopyableStandardLayoutContainer Container>
   auto read(Container& container) -> std::size_t {
