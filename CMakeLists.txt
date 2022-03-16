@@ -19,12 +19,14 @@ add_library(${PROJECT_NAME}
     "include/Y2KaoZ/Network/Buffers/SpanBufferWriter.hpp"
     "include/Y2KaoZ/Network/Buffers/VectBufferWriter.hpp"
     "include/Y2KaoZ/Network/Concepts/TriviallyCopyableStandardLayout.hpp"
+    "include/Y2KaoZ/Network/Tcp/Acceptor.hpp"
     "src/Y2KaoZ/Network/Buffers/NotEnoughData.cpp"
     "src/Y2KaoZ/Network/Buffers/NotEnoughSpace.cpp"
     "src/Y2KaoZ/Network/Buffers/ReferenceCounted.cpp"
     "src/Y2KaoZ/Network/Buffers/SpanBufferReader.cpp"
     "src/Y2KaoZ/Network/Buffers/SpanBufferWriter.cpp"
     "src/Y2KaoZ/Network/Buffers/VectBufferWriter.cpp"
+    "src/Y2KaoZ/Network/Tcp/Acceptor.cpp"
 )
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -Wconversion)
 set_target_properties(${PROJECT_NAME} PROPERTIES
