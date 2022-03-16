@@ -20,6 +20,7 @@ add_library(${PROJECT_NAME}
     "include/Y2KaoZ/Network/Buffers/VectBufferWriter.hpp"
     "include/Y2KaoZ/Network/Concepts/TriviallyCopyableStandardLayout.hpp"
     "include/Y2KaoZ/Network/Tcp/Acceptor.hpp"
+    "include/Y2KaoZ/Network/Tcp/Http/HttpSession.hpp"
     "src/Y2KaoZ/Network/Buffers/NotEnoughData.cpp"
     "src/Y2KaoZ/Network/Buffers/NotEnoughSpace.cpp"
     "src/Y2KaoZ/Network/Buffers/ReferenceCounted.cpp"
@@ -27,8 +28,12 @@ add_library(${PROJECT_NAME}
     "src/Y2KaoZ/Network/Buffers/SpanBufferWriter.cpp"
     "src/Y2KaoZ/Network/Buffers/VectBufferWriter.cpp"
     "src/Y2KaoZ/Network/Tcp/Acceptor.cpp"
+    "src/Y2KaoZ/Network/Tcp/Http/HttpSession.cpp"
 )
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -Wconversion)
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE "BOOST_BEAST_USE_STD_STRING_VIEW")
+
 set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
