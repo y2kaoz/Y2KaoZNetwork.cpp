@@ -23,6 +23,7 @@ add_library(${PROJECT_NAME}
     "include/Y2KaoZ/Network/Tcp/Http/AcceptorHandler.hpp"
     "include/Y2KaoZ/Network/Tcp/Http/HttpSession.hpp"
     "include/Y2KaoZ/Network/Tcp/Http/WebSocket/WebSocketSession.hpp"
+    "include/Y2KaoZ/Network/Tcp/Http/WebSocket/WebSocketSessions.hpp"
     "src/Y2KaoZ/Network/Buffers/NotEnoughData.cpp"
     "src/Y2KaoZ/Network/Buffers/NotEnoughSpace.cpp"
     "src/Y2KaoZ/Network/Buffers/ReferenceCounted.cpp"
@@ -33,6 +34,7 @@ add_library(${PROJECT_NAME}
     "src/Y2KaoZ/Network/Tcp/Http/AcceptorHandler.cpp"
     "src/Y2KaoZ/Network/Tcp/Http/HttpSession.cpp"
     "src/Y2KaoZ/Network/Tcp/Http/WebSocket/WebSocketSession.cpp"
+    "src/Y2KaoZ/Network/Tcp/Http/WebSocket/WebSocketSessions.cpp"
 )
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -Wconversion)
 
