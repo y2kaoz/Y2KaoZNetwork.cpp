@@ -52,7 +52,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/include"
     "${CMAKE_CURRENT_BINARY_DIR}/include"
 )
-# target_link_libraries(${PROJECT_NAME} PUBLIC )
+
+find_package(Boost REQUIRED COMPONENTS log program_options)
+target_link_libraries(${PROJECT_NAME} PUBLIC pthread ${Boost_LIBRARIES})
 
 include(GenerateExportHeader)
 generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME "include/Y2KaoZ/Network/Visibility.hpp")
