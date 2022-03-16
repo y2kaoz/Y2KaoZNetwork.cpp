@@ -20,6 +20,7 @@ add_library(${PROJECT_NAME}
     "include/Y2KaoZ/Network/Buffers/VectBufferWriter.hpp"
     "include/Y2KaoZ/Network/Concepts/TriviallyCopyableStandardLayout.hpp"
     "include/Y2KaoZ/Network/Tcp/Acceptor.hpp"
+    "include/Y2KaoZ/Network/Tcp/Http/AcceptorHandler.hpp"
     "include/Y2KaoZ/Network/Tcp/Http/HttpSession.hpp"
     "src/Y2KaoZ/Network/Buffers/NotEnoughData.cpp"
     "src/Y2KaoZ/Network/Buffers/NotEnoughSpace.cpp"
@@ -28,6 +29,7 @@ add_library(${PROJECT_NAME}
     "src/Y2KaoZ/Network/Buffers/SpanBufferWriter.cpp"
     "src/Y2KaoZ/Network/Buffers/VectBufferWriter.cpp"
     "src/Y2KaoZ/Network/Tcp/Acceptor.cpp"
+    "src/Y2KaoZ/Network/Tcp/Http/AcceptorHandler.cpp"
     "src/Y2KaoZ/Network/Tcp/Http/HttpSession.cpp"
 )
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -Wconversion)

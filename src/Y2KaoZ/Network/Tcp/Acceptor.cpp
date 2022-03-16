@@ -39,6 +39,7 @@ void Acceptor::accept() {
         return;
       }
       self->handler_->onAccept(self.get(), std::move(socket));
+      self->accept();
     });
 }
 
