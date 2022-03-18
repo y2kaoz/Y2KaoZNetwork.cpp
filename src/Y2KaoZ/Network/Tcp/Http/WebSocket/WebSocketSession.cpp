@@ -41,7 +41,7 @@ void WebSocketSession::start(const HttpRequest& req) {
   }));
 
   // Accept the websocket handshake
-  stream_.async_accept(req, [self = shared_from_this(), &req](boost::system::error_code ec) {
+  stream_.async_accept(req, [self = shared_from_this(), req](boost::system::error_code ec) {
     if (ec) {
       if (self->onError(self.get(), "start", ec)) {
         return;
