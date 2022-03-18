@@ -28,7 +28,7 @@ auto WebSocketSession::handler() const noexcept -> const Handler::Ptr& {
   return handler_;
 }
 
-void WebSocketSession::start(const boost::beast::http::request<boost::beast::http::string_body>& req) {
+void WebSocketSession::start(const HttpRequest& req) {
   if (isOpen()) {
     return;
   }
@@ -41,13 +41,13 @@ void WebSocketSession::start(const boost::beast::http::request<boost::beast::htt
   }));
 
   // Accept the websocket handshake
-  stream_.async_accept(req, [self = shared_from_this()](boost::system::error_code ec) {
+  stream_.async_accept(req, [self = shared_from_this(), &req](boost::system::error_code ec) {
     if (ec) {
       if (self->onError(self.get(), "start", ec)) {
         return;
       }
     }
-    self->handler_->onStart(self.get());
+    self->handler_->onStart(self.get(), req);
     self->read();
   });
 }

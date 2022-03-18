@@ -17,6 +17,7 @@ namespace Y2KaoZ::Network::Tcp::Http {
 
 Y2KAOZNETWORK_EXPORT class HttpSession : public std::enable_shared_from_this<HttpSession> {
 public:
+  static const std::size_t ONE_KILOBYTE = 1024U;
   using Request = boost::beast::http::request<boost::beast::http::string_body>;
 
   using StrResponse = boost::beast::http::response<boost::beast::http::string_body>;
@@ -52,7 +53,7 @@ public:
     boost::asio::ip::tcp::socket&& socket,
     std::shared_ptr<std::filesystem::path> docRoot,
     Handler::Ptr handler,
-    std::size_t bodyLimit = std::numeric_limits<std::uint16_t>::max(),
+    std::size_t bodyLimit = ONE_KILOBYTE,
     std::chrono::seconds expiresAfter = std::chrono::minutes{1});
 
   void handler(const Handler::Ptr& handler);
@@ -68,7 +69,7 @@ private:
   boost::optional<boost::beast::http::request_parser<boost::beast::http::string_body>> parser_;
   std::size_t bodyLimit_;
   std::chrono::seconds expiresAfter_;
- 
+
   void onRead(Request request);
   void read();
 };

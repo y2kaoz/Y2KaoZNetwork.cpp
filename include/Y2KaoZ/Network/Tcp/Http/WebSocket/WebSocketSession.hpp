@@ -11,6 +11,7 @@ namespace Y2KaoZ::Network::Tcp::Http::WebSocket {
 
 Y2KAOZNETWORK_EXPORT class WebSocketSession : public std::enable_shared_from_this<WebSocketSession> {
 public:
+  using HttpRequest = boost::beast::http::request<boost::beast::http::string_body>;
   using CloseReason = boost::beast::websocket::close_reason;
 
   class Handler {
@@ -28,7 +29,7 @@ public:
       gsl::not_null<WebSocketSession*> session,
       const std::string& where,
       boost::system::error_code ec) -> bool = 0;
-    virtual void onStart(gsl::not_null<WebSocketSession*> session) = 0;
+    virtual void onStart(gsl::not_null<WebSocketSession*> session, const HttpRequest& req) = 0;
     virtual void onClose(gsl::not_null<WebSocketSession*> session) = 0;
     virtual void onRead(gsl::not_null<WebSocketSession*> session, const std::string& message) = 0;
     virtual void onSend(gsl::not_null<WebSocketSession*> session, const std::string& message) = 0;
@@ -44,7 +45,7 @@ public:
 
   void handler(const Handler::Ptr& handler);
   [[nodiscard]] auto handler() const noexcept -> const Handler::Ptr&;
-  void start(const boost::beast::http::request<boost::beast::http::string_body>& req);
+  void start(const HttpRequest& req);
   void close(const CloseReason& reason = CloseReason{boost::beast::websocket::close_code::normal});
   void send(std::shared_ptr<const std::string> message);
   void send(std::string message);
