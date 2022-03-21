@@ -9,8 +9,12 @@ AcceptorHandler::AcceptorHandler(const std::filesystem::path& docRoot, HttpSessi
 }
 
 void AcceptorHandler::onHandler(gsl::not_null<Acceptor*> acceptor, Handler::Ptr oldHandler, Handler::Ptr newHandler) {
-  BOOST_LOG_TRIVIAL(trace) << "Tcp Acceptor '" << acceptor << "' switched handler from '" << oldHandler << "' to '"
-                           << newHandler << "'";
+  if (oldHandler.get() == this) {
+    BOOST_LOG_TRIVIAL(trace) << "Tcp acceptor '" << acceptor << "' switched handler from '" << oldHandler << "'";
+  }
+  if (newHandler.get() == this) {
+    BOOST_LOG_TRIVIAL(trace) << "Tcp acceptor '" << acceptor << "' switched handler to '" << newHandler << "'";
+  }
 }
 
 auto AcceptorHandler::onError(

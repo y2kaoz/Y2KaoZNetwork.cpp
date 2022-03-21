@@ -11,8 +11,12 @@ void HttpSessionHandler::onHandler(
   gsl::not_null<HttpSession*> session,
   Handler::Ptr oldHandler,
   Handler::Ptr newHandler) {
-  BOOST_LOG_TRIVIAL(trace) << "Http session '" << session << "' switched handler from '" << oldHandler << "' to '"
-                           << newHandler << "'";
+  if (oldHandler.get() == this) {
+    BOOST_LOG_TRIVIAL(trace) << "Http session '" << session << "' switched handler from '" << oldHandler << "'";
+  }
+  if (newHandler.get() == this) {
+    BOOST_LOG_TRIVIAL(trace) << "Http session '" << session << "' switched handler to '" << newHandler << "'";
+  }
 }
 
 auto HttpSessionHandler::onError(
