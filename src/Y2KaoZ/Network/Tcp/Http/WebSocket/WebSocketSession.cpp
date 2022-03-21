@@ -15,13 +15,10 @@ void WebSocketSession::handler(const Handler::Ptr& handler) {
   if (handler == nullptr) {
     throw std::runtime_error("Invalid null handler.");
   }
-  // Post our work to the strand, this ensures that the members of `this` will not be accessed concurrently.
-  boost::asio::post(stream_.get_executor(), [self = shared_from_this(), newHandler = handler]() {
-    auto oldHandler = self->handler_;
-    oldHandler->onHandler(self.get(), oldHandler, newHandler);
-    newHandler->onHandler(self.get(), oldHandler, newHandler);
-    self->handler_ = newHandler;
-  });
+  auto oldHandler = handler_;
+  oldHandler->onHandler(this, oldHandler, handler);
+  handler->onHandler(this, oldHandler, handler);
+  handler_ = handler;
 }
 
 auto WebSocketSession::handler() const noexcept -> const Handler::Ptr& {
