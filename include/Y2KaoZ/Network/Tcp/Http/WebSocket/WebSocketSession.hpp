@@ -29,7 +29,7 @@ public:
       gsl::not_null<WebSocketSession*> session,
       const std::string& where,
       boost::system::error_code ec) -> bool = 0;
-    virtual void onStart(gsl::not_null<WebSocketSession*> session, const HttpRequest& req) = 0;
+    virtual void onStart(gsl::not_null<WebSocketSession*> session, const WebSocketSession::HttpRequest& req) = 0;
     virtual void onClose(gsl::not_null<WebSocketSession*> session) = 0;
     virtual void onRead(gsl::not_null<WebSocketSession*> session, const std::string& message) = 0;
     virtual void onSend(gsl::not_null<WebSocketSession*> session, const std::string& message) = 0;
