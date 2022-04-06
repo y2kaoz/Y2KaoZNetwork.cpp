@@ -12,6 +12,7 @@ if(NOT APPLE)
 endif()
 
 add_library(${PROJECT_NAME} 
+    "include/Y2KaoZ/Network/Buffers/Endian.hpp"
     "include/Y2KaoZ/Network/Buffers/NotEnoughData.hpp"
     "include/Y2KaoZ/Network/Buffers/NotEnoughSpace.hpp"
     "include/Y2KaoZ/Network/Buffers/ReferenceCounted.hpp"
