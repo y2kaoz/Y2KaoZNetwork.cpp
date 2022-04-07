@@ -3,8 +3,8 @@
 namespace Y2KaoZ::Network::Buffers {
 
 VectBufferWriter::VectBufferWriter(gsl::not_null<std::vector<std::byte>*> vector, std::size_t start)
-  : vector_(vector)
-  , written_(start) {
+    : vector_(vector)
+    , written_(start) {
   Expects(written_ <= vector_->size());
 }
 

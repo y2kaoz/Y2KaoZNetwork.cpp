@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Y2KaoZ/Network/Buffers/Endian.hpp"
 #include "Y2KaoZ/Network/Buffers/NotEnoughData.hpp"
 #include "Y2KaoZ/Network/Concepts/TriviallyCopyableStandardLayout.hpp"
 #include "Y2KaoZ/Network/Visibility.hpp"
@@ -21,27 +22,37 @@ public:
   void seek(std::size_t index);
 
   template <TriviallyCopyableStandardLayoutContainer Container>
-  auto read(Container& container) -> std::size_t {
-    const auto size = sizeof(typename Container::value_type) * container.size();
+  inline auto read(Container& container, const std::endian& endian = std::endian::native) -> std::size_t {
+    using ContainerValue = typename Container::value_type;
+    const auto size = sizeof(ContainerValue) * container.size();
     if (size > 0) {
       if (available() < size) {
         throw NotEnoughData(size - available());
       }
-      std::memcpy(std::data(container), &buffer_[readed_], size);
-      readed_ += size;
+      if (endian == std::endian::native || sizeof(ContainerValue) == 1) {
+        std::memcpy(std::data(container), &buffer_[readed_], size);
+        readed_ += size;
+      } else {
+        for (auto& value : container) {
+          read(value, endian);
+        }
+      }
       Ensures(readed_ <= buffer_.size());
     }
     return size;
   }
 
   template <TriviallyCopyableStandardLayoutType Type>
-  auto read(Type& value) -> std::size_t {
+  inline auto read(Type& value, const std::endian& endian = std::endian::native) -> std::size_t {
     const auto size = sizeof(value);
     if (size > 0) {
       if (available() < size) {
         throw NotEnoughData(size - available());
       }
       std::memcpy(&value, &buffer_[readed_], size);
+      if (endian != std::endian::native && sizeof(Type) > 1) {
+        toNativeInplace(value, endian);
+      }
       readed_ += size;
       Ensures(readed_ <= buffer_.size());
     }
@@ -53,10 +64,10 @@ private:
   std::size_t readed_;
 };
 
-Y2KAOZNETWORK_EXPORT template <typename T>
+Y2KAOZNETWORK_EXPORT template <typename T, std::endian ENDIAN = std::endian::native>
 requires TriviallyCopyableStandardLayoutType<T> || TriviallyCopyableStandardLayoutContainer<T>
 inline auto operator>>(SpanBufferReader& buffer, T& value) -> SpanBufferReader& {
-  buffer.read(value);
+  buffer.read(value, ENDIAN);
   return buffer;
 }
 

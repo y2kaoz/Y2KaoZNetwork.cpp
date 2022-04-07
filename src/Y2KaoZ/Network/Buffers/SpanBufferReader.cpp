@@ -3,8 +3,8 @@
 namespace Y2KaoZ::Network::Buffers {
 
 SpanBufferReader::SpanBufferReader(std::span<const std::byte> buffer, std::size_t start)
-  : buffer_(buffer)
-  , readed_(start) {
+    : buffer_(buffer)
+    , readed_(start) {
   Expects(readed_ <= buffer_.size());
 }
 

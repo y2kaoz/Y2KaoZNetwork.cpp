@@ -1,8 +1,10 @@
 #pragma once
 
+#include "Y2KaoZ/Network/Buffers/Endian.hpp"
 #include "Y2KaoZ/Network/Buffers/NotEnoughSpace.hpp"
 #include "Y2KaoZ/Network/Concepts/TriviallyCopyableStandardLayout.hpp"
 #include "Y2KaoZ/Network/Visibility.hpp"
+#include <cstddef>
 #include <cstring>
 #include <gsl/gsl_util>
 #include <span>
@@ -21,27 +23,41 @@ public:
   void seek(std::size_t index);
 
   template <TriviallyCopyableStandardLayoutContainer Container>
-  auto write(const Container& container) -> std::size_t {
-    const auto size = sizeof(typename Container::value_type) * container.size();
+  auto write(const Container& container, const std::endian& endian = std::endian::native) -> std::size_t {
+    using ContainerValue = typename Container::value_type;
+    const auto size = sizeof(ContainerValue) * container.size();
     if (size > 0) {
       if (available() < size) {
         throw NotEnoughSpace(size - available());
       }
-      std::memcpy(&buffer_[written_], std::data(container), size);
-      written_ += size;
+      if (endian == std::endian::native || sizeof(ContainerValue) == 1) {
+        std::memcpy(&buffer_[written_], std::data(container), size);
+        written_ += size;
+      } else {
+        for (const auto& value : container) {
+          using Type = typename Container::value_type;
+          static_assert(TriviallyCopyableStandardLayoutType<Type>);
+          write<Type>(value, endian);
+        }
+      }
       Ensures(written_ <= buffer_.size());
     }
     return size;
   }
 
   template <TriviallyCopyableStandardLayoutType Type>
-  auto write(const Type& value) -> std::size_t {
-    const auto size = sizeof(value);
-    if (size > 0) {
+  auto write(const Type& value, const std::endian& endian = std::endian::native) -> std::size_t {
+    constexpr const std::size_t size = sizeof(value);
+    if constexpr (size > 0) {
       if (available() < size) {
         throw NotEnoughSpace(size - available());
       }
-      std::memcpy(&buffer_[written_], &value, size);
+      if (endian == std::endian::native || sizeof(Type) == 1) {
+        std::memcpy(&buffer_[written_], &value, size);
+      } else {
+        auto copy = toEndian(value, endian);
+        std::memcpy(&buffer_[written_], &copy, size);
+      }
       written_ += size;
       Ensures(written_ <= buffer_.size());
     }
@@ -53,10 +69,10 @@ private:
   std::size_t written_;
 };
 
-Y2KAOZNETWORK_EXPORT template <typename T>
+Y2KAOZNETWORK_EXPORT template <typename T, std::endian ENDIAN = std::endian::native>
 requires TriviallyCopyableStandardLayoutType<T> || TriviallyCopyableStandardLayoutContainer<T>
 inline auto operator<<(SpanBufferWriter& buffer, const T& value) -> SpanBufferWriter& {
-  buffer.write(value);
+  buffer.write(value, ENDIAN);
   return buffer;
 }
 
