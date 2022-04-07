@@ -13,6 +13,8 @@ endif()
 
 add_library(${PROJECT_NAME} 
     "include/Y2KaoZ/Network/Buffers/Endian.hpp"
+    "include/Y2KaoZ/Network/Buffers/JsonBufferReader.hpp"
+    "include/Y2KaoZ/Network/Buffers/JsonValueReader.hpp"
     "include/Y2KaoZ/Network/Buffers/NotEnoughData.hpp"
     "include/Y2KaoZ/Network/Buffers/NotEnoughSpace.hpp"
     "include/Y2KaoZ/Network/Buffers/ReferenceCounted.hpp"
@@ -27,6 +29,8 @@ add_library(${PROJECT_NAME}
     "include/Y2KaoZ/Network/Tcp/Http/WebSocket/WebSocketRouter.hpp"
     "include/Y2KaoZ/Network/Tcp/Http/WebSocket/WebSocketSession.hpp"
     "include/Y2KaoZ/Network/Tcp/Http/WebSocket/WebSocketSessions.hpp"
+    "src/Y2KaoZ/Network/Buffers/JsonBufferReader.cpp"
+    "src/Y2KaoZ/Network/Buffers/JsonValueReader.cpp"
     "src/Y2KaoZ/Network/Buffers/NotEnoughData.cpp"
     "src/Y2KaoZ/Network/Buffers/NotEnoughSpace.cpp"
     "src/Y2KaoZ/Network/Buffers/ReferenceCounted.cpp"
@@ -56,7 +60,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     "${CMAKE_CURRENT_BINARY_DIR}/include"
 )
 
-find_package(Boost REQUIRED COMPONENTS log program_options)
+find_package(Boost REQUIRED COMPONENTS log program_options json)
 target_link_libraries(${PROJECT_NAME} PUBLIC pthread ${Boost_LIBRARIES})
 
 include(GenerateExportHeader)
