@@ -4,12 +4,12 @@
 namespace Y2KaoZ::Network::Tcp {
 
 Acceptor::Acceptor(
-  boost::asio::io_context& ioContext,
-  const boost::asio::ip::tcp::endpoint& endpoint,
-  Handler::Ptr handler)
-  : ioContext_(ioContext)
-  , acceptor_{ioContext_, endpoint, true}
-  , handler_{std::move(handler)} {
+    boost::asio::io_context& ioContext,
+    const boost::asio::ip::tcp::endpoint& endpoint,
+    Handler::Ptr handler)
+    : ioContext_(ioContext)
+    , acceptor_{ioContext_, endpoint, true}
+    , handler_{std::move(handler)} {
   if (handler_ == nullptr) {
     throw std::runtime_error("Invalid null handler.");
   }
@@ -31,14 +31,14 @@ auto Acceptor::handler() const noexcept -> const Handler::Ptr& {
 
 void Acceptor::accept() {
   acceptor_.async_accept(
-    boost::asio::make_strand(ioContext_), /// <-- The new connection gets its own strand
-    [self = shared_from_this()](const boost::system::error_code& ec, boost::asio::ip::tcp::socket&& socket) {
-      if (ec && self->handler_->onError(self.get(), "accept", ec)) {
-        return;
-      }
-      self->handler_->onAccept(self.get(), std::move(socket));
-      self->accept();
-    });
+      boost::asio::make_strand(ioContext_), /// <-- The new connection gets its own strand
+      [self = shared_from_this()](const boost::system::error_code& ec, boost::asio::ip::tcp::socket&& socket) {
+        if (ec && self->handler_->onError(self.get(), "accept", ec)) {
+          return;
+        }
+        self->handler_->onAccept(self.get(), std::move(socket));
+        self->accept();
+      });
 }
 
 } // namespace Y2KaoZ::Network::Tcp

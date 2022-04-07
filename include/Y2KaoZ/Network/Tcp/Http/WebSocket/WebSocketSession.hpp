@@ -26,9 +26,9 @@ public:
 
     virtual void onHandler(gsl::not_null<WebSocketSession*> session, Ptr oldHandler, Ptr newHandler) = 0;
     virtual auto onError(
-      gsl::not_null<WebSocketSession*> session,
-      const std::string& where,
-      boost::system::error_code ec) -> bool = 0;
+        gsl::not_null<WebSocketSession*> session,
+        const std::string& where,
+        boost::system::error_code ec) -> bool = 0;
     virtual void onStart(gsl::not_null<WebSocketSession*> session, const WebSocketSession::HttpRequest& req) = 0;
     virtual void onClose(gsl::not_null<WebSocketSession*> session) = 0;
     virtual void onRead(gsl::not_null<WebSocketSession*> session, const std::string& message) = 0;
@@ -60,7 +60,7 @@ private:
   boost::beast::flat_buffer buffer_{};
   std::vector<std::shared_ptr<const std::string>> queue_{};
   auto onError(gsl::not_null<WebSocketSession*> session, const std::string& where, boost::system::error_code ec) const
-    -> bool;
+      -> bool;
   void write(const std::shared_ptr<const std::string>& message);
   void read();
 };

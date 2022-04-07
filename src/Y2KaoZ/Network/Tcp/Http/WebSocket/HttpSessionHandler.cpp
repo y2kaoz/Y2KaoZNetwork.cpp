@@ -8,9 +8,9 @@ HttpSessionHandler::HttpSessionHandler(WebSocketSession::Handler::Ptr handler) :
 }
 
 void HttpSessionHandler::onHandler(
-  gsl::not_null<HttpSession*> session,
-  Handler::Ptr oldHandler,
-  Handler::Ptr newHandler) {
+    gsl::not_null<HttpSession*> session,
+    Handler::Ptr oldHandler,
+    Handler::Ptr newHandler) {
   if (oldHandler.get() == this) {
     BOOST_LOG_TRIVIAL(trace) << "Http session '" << session << "' switched handler from '" << oldHandler << "'";
   }
@@ -20,9 +20,9 @@ void HttpSessionHandler::onHandler(
 }
 
 auto HttpSessionHandler::onError(
-  gsl::not_null<HttpSession*> session,
-  const std::string& where,
-  const boost::system::error_code& ec) -> bool {
+    gsl::not_null<HttpSession*> session,
+    const std::string& where,
+    const boost::system::error_code& ec) -> bool {
   if (ec == boost::beast::http::error::end_of_stream) {
     session->shutdown();
     return true;
@@ -49,9 +49,9 @@ void HttpSessionHandler::onShutdown(gsl::not_null<HttpSession*> session) {
 }
 
 void HttpSessionHandler::onUpgrade(
-  gsl::not_null<HttpSession*> session,
-  boost::asio::ip::tcp::socket&& socket,
-  HttpSession::Request&& req) {
+    gsl::not_null<HttpSession*> session,
+    boost::asio::ip::tcp::socket&& socket,
+    HttpSession::Request&& req) {
 
   auto wsSession = std::make_shared<WebSocketSession>(std::move(socket), handler_);
   BOOST_LOG_TRIVIAL(trace) << "Http session '" << session << "' is upgrading to WebSocket session '" << wsSession

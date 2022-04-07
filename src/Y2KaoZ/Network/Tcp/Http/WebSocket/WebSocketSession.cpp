@@ -4,8 +4,8 @@
 namespace Y2KaoZ::Network::Tcp::Http::WebSocket {
 
 WebSocketSession::WebSocketSession(boost::asio::ip::tcp::socket&& socket, Handler::Ptr handler)
-  : stream_(std::move(socket))
-  , handler_(std::move(handler)) {
+    : stream_(std::move(socket))
+    , handler_(std::move(handler)) {
   if (handler_ == nullptr) {
     throw std::runtime_error("Invalid null handler.");
   }
@@ -99,9 +99,9 @@ WebSocketSession::~WebSocketSession() noexcept {
 }
 
 auto WebSocketSession::onError(
-  gsl::not_null<WebSocketSession*> session,
-  const std::string& where,
-  boost::system::error_code ec) const -> bool {
+    gsl::not_null<WebSocketSession*> session,
+    const std::string& where,
+    boost::system::error_code ec) const -> bool {
   if (ec == boost::asio::error::operation_aborted || ec == boost::beast::websocket::error::closed) {
     return true;
   }
@@ -113,23 +113,23 @@ void WebSocketSession::write(const std::shared_ptr<const std::string>& message) 
     return;
   }
   stream_.async_write(
-    boost::asio::buffer(*message),
-    [self = shared_from_this(), message](boost::system::error_code ec, std::size_t /*bytes*/) {
-      if (ec) {
-        if (self->onError(self.get(), "send", ec)) {
-          return;
+      boost::asio::buffer(*message),
+      [self = shared_from_this(), message](boost::system::error_code ec, std::size_t /*bytes*/) {
+        if (ec) {
+          if (self->onError(self.get(), "send", ec)) {
+            return;
+          }
         }
-      }
-      self->handler_->onSend(self.get(), *self->queue_.front());
+        self->handler_->onSend(self.get(), *self->queue_.front());
 
-      // Remove the string from the queue
-      self->queue_.erase(self->queue_.begin());
+        // Remove the string from the queue
+        self->queue_.erase(self->queue_.begin());
 
-      // Send the next message if any
-      if (!self->queue_.empty()) {
-        self->write(self->queue_.front());
-      }
-    });
+        // Send the next message if any
+        if (!self->queue_.empty()) {
+          self->write(self->queue_.front());
+        }
+      });
 }
 
 void WebSocketSession::read() {

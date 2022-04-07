@@ -18,7 +18,7 @@ void WebSocketRouter::onHandler(WebSocketSessionPtr session, Ptr oldHandler, Ptr
 }
 
 auto WebSocketRouter::onError(WebSocketSessionPtr session, const std::string& where, boost::system::error_code ec)
-  -> bool {
+    -> bool {
   if (ec != boost::asio::error::operation_aborted && ec != boost::beast::websocket::error::closed) {
     BOOST_LOG_TRIVIAL(error) << "WebSocket session '" << session << "' " << where << ": '" << ec.what() << "'";
   }

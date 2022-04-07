@@ -4,8 +4,8 @@
 namespace Y2KaoZ::Network::Tcp::Http {
 
 AcceptorHandler::AcceptorHandler(const std::filesystem::path& docRoot, HttpSession::Handler::Ptr handler)
-  : docRoot_(std::make_shared<std::filesystem::path>(std::filesystem::canonical(docRoot)))
-  , handler_(std::move(handler)) {
+    : docRoot_(std::make_shared<std::filesystem::path>(std::filesystem::canonical(docRoot)))
+    , handler_(std::move(handler)) {
 }
 
 void AcceptorHandler::onHandler(gsl::not_null<Acceptor*> acceptor, Handler::Ptr oldHandler, Handler::Ptr newHandler) {
@@ -18,9 +18,9 @@ void AcceptorHandler::onHandler(gsl::not_null<Acceptor*> acceptor, Handler::Ptr 
 }
 
 auto AcceptorHandler::onError(
-  gsl::not_null<Acceptor*> acceptor,
-  const std::string& where,
-  const boost::system::error_code& ec) -> bool {
+    gsl::not_null<Acceptor*> acceptor,
+    const std::string& where,
+    const boost::system::error_code& ec) -> bool {
   BOOST_LOG_TRIVIAL(error) << "Tcp Acceptor '" << acceptor << "' error on " << where << ": '" << ec.message() << "'";
   return true;
 }

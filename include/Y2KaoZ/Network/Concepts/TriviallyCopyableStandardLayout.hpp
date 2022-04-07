@@ -17,6 +17,6 @@ concept TriviallyCopyableStandardLayoutContainer = requires(C c) {
 
 template <typename T>
 concept TriviallyCopyableStandardLayoutType =
-  std::is_standard_layout_v<T> && std::is_trivially_copyable_v<T> && !TriviallyCopyableStandardLayoutContainer<T>;
+    std::is_standard_layout_v<T> && std::is_trivially_copyable_v<T> && !TriviallyCopyableStandardLayoutContainer<T>;
 
 } // namespace Y2KaoZ::Network::Concepts

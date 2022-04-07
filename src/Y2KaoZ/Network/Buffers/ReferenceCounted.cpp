@@ -3,8 +3,8 @@
 namespace Y2KaoZ::Network::Buffers {
 
 ReferenceCounted::ReferenceCounted(std::vector<std::byte> data)
-  : data_{std::make_shared<std::vector<std::byte>>(std::move(data))}
-  , buffer_(boost::asio::buffer(*data_)) {
+    : data_{std::make_shared<std::vector<std::byte>>(std::move(data))}
+    , buffer_(boost::asio::buffer(*data_)) {
 }
 
 auto ReferenceCounted::size() const -> std::size_t {

@@ -23,9 +23,9 @@ public:
 
     virtual void onHandler(gsl::not_null<Acceptor*> acceptor, Ptr oldHandler, Ptr newHandler) = 0;
     virtual auto onError(
-      gsl::not_null<Acceptor*> acceptor,
-      const std::string& where,
-      const boost::system::error_code& ec) -> bool = 0;
+        gsl::not_null<Acceptor*> acceptor,
+        const std::string& where,
+        const boost::system::error_code& ec) -> bool = 0;
     virtual void onAccept(gsl::not_null<Acceptor*> acceptor, boost::asio::ip::tcp::socket&& socket) = 0;
   };
 

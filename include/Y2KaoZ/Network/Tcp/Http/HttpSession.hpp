@@ -37,24 +37,24 @@ public:
 
     virtual void onHandler(gsl::not_null<HttpSession*> session, Ptr oldHandler, Ptr newHandler) = 0;
     virtual auto onError(
-      gsl::not_null<HttpSession*> session,
-      const std::string& where,
-      const boost::system::error_code& ec) -> bool = 0;
+        gsl::not_null<HttpSession*> session,
+        const std::string& where,
+        const boost::system::error_code& ec) -> bool = 0;
     virtual void onStart(gsl::not_null<HttpSession*> session) = 0;
     virtual void onResponse(gsl::not_null<HttpSession*> session) = 0;
     virtual void onShutdown(gsl::not_null<HttpSession*> session) = 0;
     virtual void onUpgrade(
-      gsl::not_null<HttpSession*> session,
-      boost::asio::ip::tcp::socket&& socket,
-      Request&& req) = 0;
+        gsl::not_null<HttpSession*> session,
+        boost::asio::ip::tcp::socket&& socket,
+        Request&& req) = 0;
   };
 
   HttpSession(
-    boost::asio::ip::tcp::socket&& socket,
-    std::shared_ptr<std::filesystem::path> docRoot,
-    Handler::Ptr handler,
-    std::size_t bodyLimit = ONE_KILOBYTE,
-    std::chrono::seconds expiresAfter = std::chrono::minutes{1});
+      boost::asio::ip::tcp::socket&& socket,
+      std::shared_ptr<std::filesystem::path> docRoot,
+      Handler::Ptr handler,
+      std::size_t bodyLimit = ONE_KILOBYTE,
+      std::chrono::seconds expiresAfter = std::chrono::minutes{1});
 
   void handler(const Handler::Ptr& handler);
   [[nodiscard]] auto handler() const noexcept -> const Handler::Ptr&;

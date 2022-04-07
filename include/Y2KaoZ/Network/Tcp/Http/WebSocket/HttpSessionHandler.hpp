@@ -11,12 +11,12 @@ public:
   explicit HttpSessionHandler(WebSocketSession::Handler::Ptr handler);
   void onHandler(gsl::not_null<HttpSession*> session, Handler::Ptr oldHandler, Handler::Ptr newHandler) final;
   auto onError(gsl::not_null<HttpSession*> session, const std::string& where, const boost::system::error_code& ec)
-    -> bool final;
+      -> bool final;
   void onStart(gsl::not_null<HttpSession*> session) final;
   void onResponse(gsl::not_null<HttpSession*> session) final;
   void onShutdown(gsl::not_null<HttpSession*> session) final;
   void onUpgrade(gsl::not_null<HttpSession*> session, boost::asio::ip::tcp::socket&& socket, HttpSession::Request&& req)
-    final;
+      final;
 
 private:
   WebSocketSession::Handler::Ptr handler_;

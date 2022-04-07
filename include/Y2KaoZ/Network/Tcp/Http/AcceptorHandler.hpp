@@ -11,7 +11,7 @@ public:
   AcceptorHandler(const std::filesystem::path& docRoot, HttpSession::Handler::Ptr handler);
   void onHandler(gsl::not_null<Acceptor*> acceptor, Handler::Ptr oldHandler, Handler::Ptr newHandler) final;
   auto onError(gsl::not_null<Acceptor*> acceptor, const std::string& where, const boost::system::error_code& ec)
-    -> bool final;
+      -> bool final;
   void onAccept(gsl::not_null<Acceptor*> acceptor, boost::asio::ip::tcp::socket&& socket) final;
 
 private:

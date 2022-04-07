@@ -24,15 +24,15 @@ public:
 
   template <TriviallyCopyableStandardLayoutContainer Container>
   explicit ReferenceCounted(const Container& container)
-    : data_{std::make_shared<std::vector<std::byte>>(sizeof(Container::value_type) * container.size())}
-    , buffer_(boost::asio::buffer(*data_)) {
+      : data_{std::make_shared<std::vector<std::byte>>(sizeof(Container::value_type) * container.size())}
+      , buffer_(boost::asio::buffer(*data_)) {
     std::memcpy(data_->data(), std::data(container), data_->size());
   }
 
   template <TriviallyCopyableStandardLayoutType Type>
   explicit ReferenceCounted(const Type& value)
-    : data_{std::make_shared<std::vector<std::byte>>(sizeof(value))}
-    , buffer_(boost::asio::buffer(*data_)) {
+      : data_{std::make_shared<std::vector<std::byte>>(sizeof(value))}
+      , buffer_(boost::asio::buffer(*data_)) {
     std::memcpy(data_->data(), &value, data_->size());
   }
 

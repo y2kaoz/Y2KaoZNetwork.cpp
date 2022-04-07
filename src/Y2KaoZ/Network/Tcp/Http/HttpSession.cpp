@@ -19,28 +19,28 @@ struct ArrayMap {
 auto mimeLookup(const std::filesystem::path& path) -> std::string_view {
   using namespace std::string_view_literals;
   constexpr ArrayMap<std::string_view, std::string_view, 22> arrayMap{.data{{
-    {".bmp"sv, "image/bmp"sv},
-    {".css"sv, "text/css"sv},
-    {".flv"sv, "application/x-flv"sv},
-    {".gif"sv, "image/gif"sv},
-    {".htm"sv, "text/html"sv},
-    {".html"sv, "text/html"sv},
-    {".ico"sv, "image/vnd.microsoft.icon"sv},
-    {".jpe"sv, "image/jpeg"sv},
-    {".jpeg"sv, "image/jpeg"sv},
-    {".jpg"sv, "image/jpeg"sv},
-    {".js"sv, "application/javascript"sv},
-    {".json"sv, "application/json"sv},
-    {".mjs"sv, "application/javascript"sv},
-    {".php"sv, "text/html"sv},
-    {".png"sv, "image/png"sv},
-    {".svg"sv, "image/svg+xml"sv},
-    {".svgz"sv, "image/svg+xml"sv},
-    {".swf"sv, "application/x-shockwave-flash"sv},
-    {".tif"sv, "image/tiff"sv},
-    {".tiff"sv, "image/tiff"sv},
-    {".txt"sv, "text/plain"sv},
-    {".xml"sv, "application/xml"sv},
+      {".bmp"sv, "image/bmp"sv},
+      {".css"sv, "text/css"sv},
+      {".flv"sv, "application/x-flv"sv},
+      {".gif"sv, "image/gif"sv},
+      {".htm"sv, "text/html"sv},
+      {".html"sv, "text/html"sv},
+      {".ico"sv, "image/vnd.microsoft.icon"sv},
+      {".jpe"sv, "image/jpeg"sv},
+      {".jpeg"sv, "image/jpeg"sv},
+      {".jpg"sv, "image/jpeg"sv},
+      {".js"sv, "application/javascript"sv},
+      {".json"sv, "application/json"sv},
+      {".mjs"sv, "application/javascript"sv},
+      {".php"sv, "text/html"sv},
+      {".png"sv, "image/png"sv},
+      {".svg"sv, "image/svg+xml"sv},
+      {".svgz"sv, "image/svg+xml"sv},
+      {".swf"sv, "application/x-shockwave-flash"sv},
+      {".tif"sv, "image/tiff"sv},
+      {".tiff"sv, "image/tiff"sv},
+      {".txt"sv, "text/plain"sv},
+      {".xml"sv, "application/xml"sv},
   }}};
   try {
     return arrayMap.at(path.extension().string());
@@ -54,7 +54,7 @@ using HttpSession = Y2KaoZ::Network::Tcp::Http::HttpSession;
 class BadRequestResponse : public HttpSession::StrResponse {
 public:
   BadRequestResponse(const HttpSession::Request& req, const std::string_view& why)
-    : HttpSession::StrResponse{boost::beast::http::status::bad_request, req.version()} {
+      : HttpSession::StrResponse{boost::beast::http::status::bad_request, req.version()} {
     set(boost::beast::http::field::server, "Boost.Beast");
     set(boost::beast::http::field::content_type, "text/html");
     keep_alive(req.keep_alive());
@@ -66,7 +66,7 @@ public:
 class NotFoundResponse : public HttpSession::StrResponse {
 public:
   NotFoundResponse(const HttpSession::Request& req, const std::string_view& target)
-    : HttpSession::StrResponse{boost::beast::http::status::not_found, req.version()} {
+      : HttpSession::StrResponse{boost::beast::http::status::not_found, req.version()} {
     set(boost::beast::http::field::server, "Boost.Beast");
     set(boost::beast::http::field::content_type, "text/html");
     keep_alive(req.keep_alive());
@@ -78,7 +78,7 @@ public:
 class ServerErrorResponse : public HttpSession::StrResponse {
 public:
   ServerErrorResponse(const HttpSession::Request& req, const std::string_view& what)
-    : HttpSession::StrResponse{boost::beast::http::status::internal_server_error, req.version()} {
+      : HttpSession::StrResponse{boost::beast::http::status::internal_server_error, req.version()} {
     set(boost::beast::http::field::server, "Boost.Beast");
     set(boost::beast::http::field::content_type, "text/html");
     keep_alive(req.keep_alive());
@@ -90,7 +90,7 @@ public:
 class HeadResponse : public HttpSession::EmptyResponse {
 public:
   HeadResponse(const HttpSession::Request& req, const std::filesystem::path& path)
-    : HttpSession::EmptyResponse{boost::beast::http::status::ok, req.version()} {
+      : HttpSession::EmptyResponse{boost::beast::http::status::ok, req.version()} {
     set(boost::beast::http::field::server, "Boost.Beast");
     set(boost::beast::http::field::content_type, mimeLookup(path));
     content_length(std::filesystem::file_size(path));
@@ -111,10 +111,10 @@ class GetResponse : public HttpSession::FileResponse {
 
 public:
   GetResponse(const HttpSession::Request& req, const std::filesystem::path& path)
-    : HttpSession::FileResponse{
-        std::piecewise_construct,
-        std::make_tuple(openBody(path)),
-        std::make_tuple(boost::beast::http::status::ok, req.version())} {
+      : HttpSession::FileResponse{
+            std::piecewise_construct,
+            std::make_tuple(openBody(path)),
+            std::make_tuple(boost::beast::http::status::ok, req.version())} {
     set(boost::beast::http::field::server, "Boost.Beast");
     set(boost::beast::http::field::content_type, mimeLookup(path));
     content_length(std::filesystem::file_size(path));
@@ -127,16 +127,16 @@ public:
 namespace Y2KaoZ::Network::Tcp::Http {
 
 HttpSession::HttpSession(
-  boost::asio::ip::tcp::socket&& socket,
-  std::shared_ptr<std::filesystem::path> docRoot,
-  Handler::Ptr handler,
-  std::size_t bodyLimit,
-  std::chrono::seconds expiresAfter)
-  : stream_{std::move(socket)}
-  , handler_{std::move(handler)}
-  , docRoot_{std::move(docRoot)}
-  , bodyLimit_{bodyLimit}
-  , expiresAfter_{expiresAfter} {
+    boost::asio::ip::tcp::socket&& socket,
+    std::shared_ptr<std::filesystem::path> docRoot,
+    Handler::Ptr handler,
+    std::size_t bodyLimit,
+    std::chrono::seconds expiresAfter)
+    : stream_{std::move(socket)}
+    , handler_{std::move(handler)}
+    , docRoot_{std::move(docRoot)}
+    , bodyLimit_{bodyLimit}
+    , expiresAfter_{expiresAfter} {
   if (handler_ == nullptr) {
     throw std::runtime_error("Invalid null handler.");
   }
@@ -177,15 +177,15 @@ void HttpSession::read() {
   parser_->body_limit(bodyLimit_);
   stream_.expires_after(expiresAfter_);
   boost::beast::http::async_read(
-    stream_,
-    buffer_,
-    parser_->get(),
-    [self = shared_from_this()](boost::system::error_code ec, std::size_t /*bytes*/) {
-      if (ec && self->handler_->onError(self.get(), "read", ec)) {
-        return;
-      }
-      self->onRead(self->parser_->release());
-    });
+      stream_,
+      buffer_,
+      parser_->get(),
+      [self = shared_from_this()](boost::system::error_code ec, std::size_t /*bytes*/) {
+        if (ec && self->handler_->onError(self.get(), "read", ec)) {
+          return;
+        }
+        self->onRead(self->parser_->release());
+      });
 }
 
 void HttpSession::onRead(Request request) {
@@ -201,18 +201,18 @@ void HttpSession::onRead(Request request) {
 
   auto send = [this](auto&& response) {
     boost::beast::http::async_write(
-      stream_,
-      *response,
-      [self = shared_from_this(), response](boost::system::error_code ec, std::size_t /*bytes*/) {
-        if (ec && self->handler_->onError(self.get(), "send", ec)) {
-          return;
-        }
-        if (response->need_eof()) {
-          return self->shutdown();
-        }
-        self->handler_->onResponse(self.get());
-        self->read();
-      });
+        stream_,
+        *response,
+        [self = shared_from_this(), response](boost::system::error_code ec, std::size_t /*bytes*/) {
+          if (ec && self->handler_->onError(self.get(), "send", ec)) {
+            return;
+          }
+          if (response->need_eof()) {
+            return self->shutdown();
+          }
+          self->handler_->onResponse(self.get());
+          self->read();
+        });
   };
 
   if (!std::filesystem::exists(path)) {
