@@ -12,38 +12,63 @@ if(NOT APPLE)
 endif()
 
 add_library(${PROJECT_NAME} 
-    "include/Y2KaoZ/Network/Buffers/Endian.hpp"
-    "include/Y2KaoZ/Network/Buffers/JsonBufferReader.hpp"
-    "include/Y2KaoZ/Network/Buffers/JsonValueReader.hpp"
-    "include/Y2KaoZ/Network/Buffers/NotEnoughData.hpp"
-    "include/Y2KaoZ/Network/Buffers/NotEnoughSpace.hpp"
-    "include/Y2KaoZ/Network/Buffers/ReferenceCounted.hpp"
-    "include/Y2KaoZ/Network/Buffers/SpanBufferReader.hpp"
-    "include/Y2KaoZ/Network/Buffers/SpanBufferWriter.hpp"
-    "include/Y2KaoZ/Network/Buffers/VectBufferWriter.hpp"
-    "include/Y2KaoZ/Network/Concepts/TriviallyCopyableStandardLayout.hpp"
-    "include/Y2KaoZ/Network/Tcp/Acceptor.hpp"
-    "include/Y2KaoZ/Network/Tcp/Http/AcceptorHandler.hpp"
-    "include/Y2KaoZ/Network/Tcp/Http/HttpSession.hpp"
-    "include/Y2KaoZ/Network/Tcp/Http/WebSocket/HttpSessionHandler.hpp"
-    "include/Y2KaoZ/Network/Tcp/Http/WebSocket/WebSocketRouter.hpp"
-    "include/Y2KaoZ/Network/Tcp/Http/WebSocket/WebSocketSession.hpp"
-    "include/Y2KaoZ/Network/Tcp/Http/WebSocket/WebSocketSessions.hpp"
-    "src/Y2KaoZ/Network/Buffers/JsonBufferReader.cpp"
-    "src/Y2KaoZ/Network/Buffers/JsonValueReader.cpp"
-    "src/Y2KaoZ/Network/Buffers/NotEnoughData.cpp"
-    "src/Y2KaoZ/Network/Buffers/NotEnoughSpace.cpp"
-    "src/Y2KaoZ/Network/Buffers/ReferenceCounted.cpp"
-    "src/Y2KaoZ/Network/Buffers/SpanBufferReader.cpp"
-    "src/Y2KaoZ/Network/Buffers/SpanBufferWriter.cpp"
-    "src/Y2KaoZ/Network/Buffers/VectBufferWriter.cpp"
-    "src/Y2KaoZ/Network/Tcp/Acceptor.cpp"
-    "src/Y2KaoZ/Network/Tcp/Http/AcceptorHandler.cpp"
-    "src/Y2KaoZ/Network/Tcp/Http/HttpSession.cpp"
-    "src/Y2KaoZ/Network/Tcp/Http/WebSocket/HttpSessionHandler.cpp"
-    "src/Y2KaoZ/Network/Tcp/Http/WebSocket/WebSocketRouter.cpp"
-    "src/Y2KaoZ/Network/Tcp/Http/WebSocket/WebSocketSession.cpp"
-    "src/Y2KaoZ/Network/Tcp/Http/WebSocket/WebSocketSessions.cpp"
+include/Y2KaoZ/Network/Buffers/Endian.hpp
+include/Y2KaoZ/Network/Buffers/JsonBufferReader.hpp
+include/Y2KaoZ/Network/Buffers/JsonValueReader.hpp
+include/Y2KaoZ/Network/Buffers/NotEnoughData.hpp
+include/Y2KaoZ/Network/Buffers/NotEnoughSpace.hpp
+include/Y2KaoZ/Network/Buffers/ReferenceCounted.hpp
+include/Y2KaoZ/Network/Buffers/SpanBufferReader.hpp
+include/Y2KaoZ/Network/Buffers/SpanBufferWriter.hpp
+include/Y2KaoZ/Network/Buffers/VectBufferWriter.hpp
+include/Y2KaoZ/Network/Concepts/TriviallyCopyableStandardLayout.hpp
+include/Y2KaoZ/Network/Protocol/Concepts.hpp
+include/Y2KaoZ/Network/Protocol/Header/AnyHeaderT.hpp
+include/Y2KaoZ/Network/Protocol/Header/BaseHeader/BodySizePolicyT/BodySize.hpp
+include/Y2KaoZ/Network/Protocol/Header/BaseHeader/BodySizePolicyT.hpp
+include/Y2KaoZ/Network/Protocol/Header/BaseHeader/BodySizePolicyT/NoBodySize.hpp
+include/Y2KaoZ/Network/Protocol/Header/BaseHeader/HeaderIdPolicyT.hpp
+include/Y2KaoZ/Network/Protocol/Header/BaseHeader/HeaderIdPolicyT/NoHeaderId.hpp
+include/Y2KaoZ/Network/Protocol/Header/BaseHeader/HeaderIdPolicyT/RandomBytesHeaderId.hpp
+include/Y2KaoZ/Network/Protocol/Header/BaseHeader/HeaderIdPolicyT/RandomIntHeaderId.hpp
+include/Y2KaoZ/Network/Protocol/Header/BaseHeader/HeaderIdPolicyT/UnsignedHeaderId.hpp
+include/Y2KaoZ/Network/Protocol/Header/BaseHeader/HeaderIdPolicyT/UuidHeaderId.hpp
+include/Y2KaoZ/Network/Protocol/Header/BaseHeader.hpp
+include/Y2KaoZ/Network/Protocol/Header.hpp
+include/Y2KaoZ/Network/Protocol/Message/AnyMessageT.hpp
+include/Y2KaoZ/Network/Protocol/Message.hpp
+include/Y2KaoZ/Network/Protocol/Opcode/AnyOpcodeT.hpp
+include/Y2KaoZ/Network/Protocol/Opcode/BaseOpcode.hpp
+include/Y2KaoZ/Network/Protocol/Opcode/BaseOpcode/MajorPolicyT.hpp
+include/Y2KaoZ/Network/Protocol/Opcode/BaseOpcode/MajorPolicyT/MajorVersion.hpp
+include/Y2KaoZ/Network/Protocol/Opcode/BaseOpcode/MajorPolicyT/NoMajorVersion.hpp
+include/Y2KaoZ/Network/Protocol/Opcode/BaseOpcode/MinorPolicyT.hpp
+include/Y2KaoZ/Network/Protocol/Opcode/BaseOpcode/MinorPolicyT/MinorVersion.hpp
+include/Y2KaoZ/Network/Protocol/Opcode/BaseOpcode/MinorPolicyT/NoMinorVersion.hpp
+include/Y2KaoZ/Network/Protocol/Opcode/BaseOpcode/OpcodeIdT.hpp
+include/Y2KaoZ/Network/Protocol/Opcode.hpp
+include/Y2KaoZ/Network/Tcp/Acceptor.hpp
+include/Y2KaoZ/Network/Tcp/Http/AcceptorHandler.hpp
+include/Y2KaoZ/Network/Tcp/Http/HttpSession.hpp
+include/Y2KaoZ/Network/Tcp/Http/WebSocket/HttpSessionHandler.hpp
+include/Y2KaoZ/Network/Tcp/Http/WebSocket/WebSocketRouter.hpp
+include/Y2KaoZ/Network/Tcp/Http/WebSocket/WebSocketSession.hpp
+include/Y2KaoZ/Network/Tcp/Http/WebSocket/WebSocketSessions.hpp
+src/Y2KaoZ/Network/Buffers/JsonBufferReader.cpp
+src/Y2KaoZ/Network/Buffers/JsonValueReader.cpp
+src/Y2KaoZ/Network/Buffers/NotEnoughData.cpp
+src/Y2KaoZ/Network/Buffers/NotEnoughSpace.cpp
+src/Y2KaoZ/Network/Buffers/ReferenceCounted.cpp
+src/Y2KaoZ/Network/Buffers/SpanBufferReader.cpp
+src/Y2KaoZ/Network/Buffers/SpanBufferWriter.cpp
+src/Y2KaoZ/Network/Buffers/VectBufferWriter.cpp
+src/Y2KaoZ/Network/Tcp/Acceptor.cpp
+src/Y2KaoZ/Network/Tcp/Http/AcceptorHandler.cpp
+src/Y2KaoZ/Network/Tcp/Http/HttpSession.cpp
+src/Y2KaoZ/Network/Tcp/Http/WebSocket/HttpSessionHandler.cpp
+src/Y2KaoZ/Network/Tcp/Http/WebSocket/WebSocketRouter.cpp
+src/Y2KaoZ/Network/Tcp/Http/WebSocket/WebSocketSession.cpp
+src/Y2KaoZ/Network/Tcp/Http/WebSocket/WebSocketSessions.cpp
 )
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -Wconversion)
 
@@ -61,7 +86,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 
 find_package(Boost REQUIRED COMPONENTS log program_options json)
-target_link_libraries(${PROJECT_NAME} PUBLIC pthread ${Boost_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC pthread ${Boost_LIBRARIES} fmt)
 
 include(GenerateExportHeader)
 generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME "include/Y2KaoZ/Network/Visibility.hpp")
