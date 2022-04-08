@@ -12,7 +12,10 @@ namespace Y2KaoZ::Network::Protocol::Opcode {
 Y2KAOZNETWORK_EXPORT class NoMinorVersion {
 public:
   using MinorT = std::size_t;
+
   constexpr NoMinorVersion() = default;
+  auto operator==(const NoMinorVersion&) const -> bool = default;
+
   explicit constexpr NoMinorVersion(const std::optional<MinorT> /*minor*/) {
   }
   [[nodiscard]] constexpr auto minor() const noexcept -> std::optional<MinorT> {

@@ -12,7 +12,10 @@ namespace Y2KaoZ::Network::Protocol::Opcode {
 Y2KAOZNETWORK_EXPORT class NoMajorVersion {
 public:
   using MajorT = std::size_t;
+
   constexpr NoMajorVersion() = default;
+  auto operator==(const NoMajorVersion&) const -> bool = default;
+
   explicit constexpr NoMajorVersion(const std::optional<MajorT> /*major*/) {
   }
   [[nodiscard]] constexpr auto major() const noexcept -> std::optional<MajorT> {

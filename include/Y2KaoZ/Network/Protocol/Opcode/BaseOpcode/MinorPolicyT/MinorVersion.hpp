@@ -14,7 +14,10 @@ template <std::unsigned_integral MinorT_>
 Y2KAOZNETWORK_EXPORT class MinorVersion {
 public:
   using MinorT = MinorT_;
+
   constexpr MinorVersion() = default;
+  auto operator==(const MinorVersion&) const -> bool = default;
+
   explicit constexpr MinorVersion(const std::optional<MinorT>& minor) : minor_{minor.value_or(0)} {
   }
   [[nodiscard]] constexpr auto minor() const noexcept -> std::optional<MinorT> {

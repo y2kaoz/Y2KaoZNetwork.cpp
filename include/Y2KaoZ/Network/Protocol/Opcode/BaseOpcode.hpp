@@ -21,6 +21,7 @@ public:
   static constexpr const OpcodeIdT REJECTED = static_cast<OpcodeIdT>(-1);
 
   constexpr BaseOpcode() = default;
+  auto operator==(const BaseOpcode&) const -> bool = default;
 
   constexpr explicit BaseOpcode(
       const OpcodeIdT& id,
@@ -101,9 +102,12 @@ template <OpcodeIdT OpcodeIdT_, MajorPolicyT MajorPolicy_, MinorPolicyT MinorPol
 Y2KAOZNETWORK_EXPORT inline void jsonSerialize(
     const BaseOpcode<OpcodeIdT_, MajorPolicy_, MinorPolicy_>& in,
     boost::json::object& out) {
-  out["id"] = gsl::narrow<std::uint64_t>(in.id());
-  jsonSerialize(MajorPolicy_{in.major()}, out);
-  jsonSerialize(MinorPolicy_{in.minor()}, out);
+  boost::json::object opcode{
+      {"id", gsl::narrow<std::uint64_t>(in.id())},
+  };
+  jsonSerialize(MajorPolicy_{in.major()}, opcode);
+  jsonSerialize(MinorPolicy_{in.minor()}, opcode);
+  out["opcode"] = opcode;
 }
 
 template <OpcodeIdT OpcodeIdT_, MajorPolicyT MajorPolicy_, MinorPolicyT MinorPolicy_>
@@ -114,9 +118,11 @@ Y2KAOZNETWORK_EXPORT inline void jsonDeserialize(
   MajorPolicy_ majorPolicy{};
   MinorPolicy_ minorPolicy{};
 
-  id = gsl::narrow<OpcodeIdT_>(Buffers::JsonValueReader{in, "id"}.uint64());
-  jsonDeserialize(majorPolicy, in);
-  jsonDeserialize(minorPolicy, in);
+  auto opcode = Buffers::JsonValueReader{in, "opcode"}.object();
+
+  id = gsl::narrow<OpcodeIdT_>(Buffers::JsonValueReader{opcode, "id"}.uint64());
+  jsonDeserialize(majorPolicy, opcode);
+  jsonDeserialize(minorPolicy, opcode);
 
   out.id(id);
   out.major(majorPolicy.major());

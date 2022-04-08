@@ -14,7 +14,10 @@ template <std::unsigned_integral MajorT_>
 Y2KAOZNETWORK_EXPORT class MajorVersion {
 public:
   using MajorT = MajorT_;
+
   constexpr MajorVersion() = default;
+  auto operator==(const MajorVersion&) const -> bool = default;
+
   explicit constexpr MajorVersion(const std::optional<MajorT>& major) : major_{major.value_or(0)} {
   }
   [[nodiscard]] constexpr auto major() const noexcept -> std::optional<MajorT> {
