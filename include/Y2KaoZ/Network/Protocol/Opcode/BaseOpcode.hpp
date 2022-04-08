@@ -62,8 +62,8 @@ private:
 };
 
 static_assert(
-    sizeof(BaseOpcode<std::uint16_t, Opcode::NoMajorVersion<>, Opcode::NoMinorVersion<>>) ==
-    sizeof(BaseOpcode<std::uint16_t, Opcode::NoMajorVersion<>, Opcode::NoMinorVersion<>>::OpcodeIdT));
+    sizeof(BaseOpcode<std::uint16_t, Opcode::NoMajorVersion, Opcode::NoMinorVersion>) ==
+    sizeof(BaseOpcode<std::uint16_t, Opcode::NoMajorVersion, Opcode::NoMinorVersion>::OpcodeIdT));
 
 template <OpcodeIdT OpcodeIdT_, MajorPolicyT MajorPolicy_, MinorPolicyT MinorPolicy_>
 Y2KAOZNETWORK_EXPORT void byteSerialize(
@@ -80,15 +80,21 @@ Y2KAOZNETWORK_EXPORT void byteDeserialize(
     BaseOpcode<OpcodeIdT_, MajorPolicy_, MinorPolicy_>& out,
     Buffers::SpanBufferReader& in,
     std::endian endian = std::endian::native) {
+  auto reader = in;
+
   OpcodeIdT_ id{};
   MajorPolicy_ majorPolicy{};
   MinorPolicy_ minorPolicy{};
-  in.read(id, endian);
-  byteDeserialize(majorPolicy, in, endian);
-  byteDeserialize(minorPolicy, in, endian);
+
+  reader.read(id, endian);
+  byteDeserialize(majorPolicy, reader, endian);
+  byteDeserialize(minorPolicy, reader, endian);
+
   out.id(id);
   out.major(majorPolicy.major());
   out.minor(minorPolicy.minor());
+
+  in.seek(reader.readed());
 }
 
 template <OpcodeIdT OpcodeIdT_, MajorPolicyT MajorPolicy_, MinorPolicyT MinorPolicy_>
@@ -107,10 +113,11 @@ Y2KAOZNETWORK_EXPORT inline void jsonDeserialize(
   OpcodeIdT_ id{};
   MajorPolicy_ majorPolicy{};
   MinorPolicy_ minorPolicy{};
-  id = gsl::narrow<OpcodeIdT_>(Buffers::JsonValueReader{in.at("id")}.uint64());
 
+  id = gsl::narrow<OpcodeIdT_>(Buffers::JsonValueReader{in, "id"}.uint64());
   jsonDeserialize(majorPolicy, in);
   jsonDeserialize(minorPolicy, in);
+
   out.id(id);
   out.major(majorPolicy.major());
   out.minor(minorPolicy.minor());

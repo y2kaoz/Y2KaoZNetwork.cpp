@@ -5,6 +5,7 @@
 #include <boost/json/object.hpp>
 #include <boost/json/serialize.hpp>
 #include <boost/json/stream_parser.hpp>
+#include <string_view>
 
 namespace Y2KaoZ::Network::Buffers {
 
@@ -12,6 +13,7 @@ class Y2KAOZNETWORK_EXPORT JsonValueReader {
 public:
   JsonValueReader() = default;
   explicit JsonValueReader(const boost::json::value& value);
+  explicit JsonValueReader(const boost::json::object& object, const boost::json::string_view& key = {});
 
   [[nodiscard]] auto value() const noexcept -> const boost::json::value&;
   void value(const boost::json::value& value);

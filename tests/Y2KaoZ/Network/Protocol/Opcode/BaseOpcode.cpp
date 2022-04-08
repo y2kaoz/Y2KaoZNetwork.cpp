@@ -8,7 +8,7 @@ TEST_CASE("Only Id") { // NOLINT
   using Y2KaoZ::Network::Protocol::Opcode::BaseOpcode;
   using Y2KaoZ::Network::Protocol::Opcode::NoMajorVersion;
   using Y2KaoZ::Network::Protocol::Opcode::NoMinorVersion;
-  using OpcodeT = BaseOpcode<std::uint16_t, NoMajorVersion<>, NoMinorVersion<>>;
+  using OpcodeT = BaseOpcode<std::uint16_t, NoMajorVersion, NoMinorVersion>;
 
   const OpcodeT opcode{1, 2, 3};
   REQUIRE(opcode.id() == 1);
@@ -75,7 +75,7 @@ TEST_CASE("Id And Major") { // NOLINT
   using Y2KaoZ::Network::Protocol::Opcode::BaseOpcode;
   using Y2KaoZ::Network::Protocol::Opcode::MajorVersion;
   using Y2KaoZ::Network::Protocol::Opcode::NoMinorVersion;
-  using OpcodeT = BaseOpcode<std::uint16_t, MajorVersion<std::uint8_t>, NoMinorVersion<>>;
+  using OpcodeT = BaseOpcode<std::uint16_t, MajorVersion<std::uint8_t>, NoMinorVersion>;
 
   const OpcodeT opcode{1, 2, 3};
   REQUIRE(opcode.id() == 1);

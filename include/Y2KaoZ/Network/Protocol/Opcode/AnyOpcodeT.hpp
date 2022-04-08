@@ -26,6 +26,6 @@ concept AnyOpcodeT = ByteSerializable<AnyOpcode_> && JsonSerializable<AnyOpcode_
   { opcode.minor(minor) } -> std::same_as<void>;
 };
 
-static_assert(AnyOpcodeT<BaseOpcode<std::uint8_t, NoMajorVersion<>, NoMinorVersion<>>>);
+static_assert(AnyOpcodeT<BaseOpcode<std::uint8_t, NoMajorVersion, NoMinorVersion>>);
 
 } // namespace Y2KaoZ::Network::Protocol::Opcode

@@ -4,7 +4,6 @@
 #include "Y2KaoZ/Network/Buffers/SpanBufferReader.hpp"
 #include "Y2KaoZ/Network/Buffers/VectBufferWriter.hpp"
 #include "Y2KaoZ/Network/Visibility.hpp"
-#include <boost/json/object.hpp>
 #include <boost/json/serialize.hpp>
 #include <gsl/gsl_assert>
 #include <optional>
@@ -22,9 +21,8 @@ public:
     return minor_;
   }
   constexpr void minor(const std::optional<MinorT>& minor) {
-    if (minor.has_value()) {
-      minor_ = minor.value();
-    }
+    Expects(minor.has_value());
+    minor_ = minor.value();
   }
 
 private:
@@ -37,8 +35,7 @@ Y2KAOZNETWORK_EXPORT void byteSerialize(
     Buffers::VectBufferWriter& out,
     std::endian endian = std::endian::native) {
   Expects(in.minor().has_value());
-  using MinorT = typename std::decay_t<decltype(in)>::MinorT;
-  out.write<MinorT>(in.minor().value(), endian);
+  out.write(in.minor().value(), endian);
 }
 
 template <std::unsigned_integral MinorT_>
@@ -47,10 +44,14 @@ Y2KAOZNETWORK_EXPORT void byteDeserialize(
     Buffers::SpanBufferReader& in,
     std::endian endian = std::endian::native) {
   Expects(out.minor().has_value());
+  auto reader = in;
+
   using MinorT = typename std::decay_t<decltype(out)>::MinorT;
   MinorT minor{};
-  in.read<MinorT>(minor, endian);
+  reader.read(minor, endian);
+
   out.minor(minor);
+  in.seek(reader.readed());
 }
 
 template <std::unsigned_integral MinorT_>
@@ -63,7 +64,7 @@ template <std::unsigned_integral MinorT_>
 Y2KAOZNETWORK_EXPORT inline void jsonDeserialize(MinorVersion<MinorT_>& out, const boost::json::object& in) {
   Expects(out.minor().has_value());
   using MinorT = typename std::decay_t<decltype(out)>::MinorT;
-  out.minor(gsl::narrow<MinorT>(Buffers::JsonValueReader{in.at("minor")}.uint64()));
+  out.minor(gsl::narrow<MinorT>(Buffers::JsonValueReader{in, "minor"}.uint64()));
 }
 
 template <std::unsigned_integral MinorT_>

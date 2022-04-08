@@ -1,5 +1,7 @@
 #include "Y2KaoZ/Network/Buffers/JsonValueReader.hpp"
 #include <boost/json/kind.hpp>
+#include <boost/json/serialize.hpp>
+#include <fmt/format.h>
 #include <gsl/gsl_assert>
 #include <gsl/gsl_util>
 #include <stdexcept>
@@ -34,6 +36,21 @@ JsonValueReader::JsonValueReader(const boost::json::value& value) {
   // TODO(y2kaoz): investigate and report boost::json::value has an unknown bug in copy constructor.
   value_ = value; // NOLINT(cppcoreguidelines-prefer-member-initializer)
   Expects(value_ == value);
+}
+
+JsonValueReader::JsonValueReader(const boost::json::object& object, const boost::json::string_view& key) {
+  if (key.empty()) {
+    value_ = object;
+  } else {
+    const auto* const value = object.if_contains(key);
+    if (value == nullptr) {
+      throw std::invalid_argument(fmt::format(
+          R"(The object "{}" does not contain the key: "{}".)",
+          boost::json::serialize(object),
+          key.to_string()));
+    }
+    value_ = *value;
+  }
 }
 
 [[nodiscard]] auto JsonValueReader::value() const noexcept -> const boost::json::value& {

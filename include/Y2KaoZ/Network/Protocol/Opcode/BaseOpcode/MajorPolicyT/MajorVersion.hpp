@@ -4,7 +4,6 @@
 #include "Y2KaoZ/Network/Buffers/SpanBufferReader.hpp"
 #include "Y2KaoZ/Network/Buffers/VectBufferWriter.hpp"
 #include "Y2KaoZ/Network/Visibility.hpp"
-#include <boost/json/object.hpp>
 #include <boost/json/serialize.hpp>
 #include <gsl/gsl_assert>
 #include <optional>
@@ -22,9 +21,8 @@ public:
     return major_;
   }
   constexpr void major(const std::optional<MajorT>& major) {
-    if (major.has_value()) {
-      major_ = major.value();
-    }
+    Expects(major.has_value());
+    major_ = major.value();
   }
 
 private:
@@ -37,8 +35,7 @@ Y2KAOZNETWORK_EXPORT void byteSerialize(
     Buffers::VectBufferWriter& out,
     std::endian endian = std::endian::native) {
   Expects(in.major().has_value());
-  using MajorT = typename std::decay_t<decltype(in)>::MajorT;
-  out.write<MajorT>(in.major().value(), endian);
+  out.write(in.major().value(), endian);
 }
 
 template <std::unsigned_integral MajorT_>
@@ -47,10 +44,14 @@ Y2KAOZNETWORK_EXPORT void byteDeserialize(
     Buffers::SpanBufferReader& in,
     std::endian endian = std::endian::native) {
   Expects(out.major().has_value());
+  auto reader = in;
+
   using MajorT = typename std::decay_t<decltype(out)>::MajorT;
   MajorT major{};
-  in.read<MajorT>(major, endian);
+  reader.read(major, endian);
+
   out.major(major);
+  in.seek(reader.readed());
 }
 
 template <std::unsigned_integral MajorT_>
@@ -63,7 +64,7 @@ template <std::unsigned_integral MajorT_>
 Y2KAOZNETWORK_EXPORT inline void jsonDeserialize(MajorVersion<MajorT_>& out, const boost::json::object& in) {
   Expects(out.major().has_value());
   using MajorT = typename std::decay_t<decltype(out)>::MajorT;
-  out.major(gsl::narrow<MajorT>(Buffers::JsonValueReader{in.at("major")}.uint64()));
+  out.major(gsl::narrow<MajorT>(Buffers::JsonValueReader{in, "major"}.uint64()));
 }
 
 template <std::unsigned_integral MajorT_>
