@@ -3,6 +3,7 @@
 #include "Y2KaoZ/Network/Buffers/Endian.hpp"
 #include "Y2KaoZ/Network/Concepts/TriviallyCopyableStandardLayout.hpp"
 #include "Y2KaoZ/Network/Visibility.hpp"
+#include <cstddef>
 #include <cstring>
 #include <gsl/gsl_util>
 #include <gsl/pointers>
@@ -23,43 +24,50 @@ public:
   void seek(std::size_t index);
 
   template <TriviallyCopyableStandardLayoutContainer Container>
-  auto write(const Container& container, const std::endian& endian = std::endian::native) -> std::size_t {
+  auto write(const Container& container) -> std::size_t {
     using ContainerValue = typename Container::value_type;
     const auto size = sizeof(ContainerValue) * container.size();
     if (size > 0) {
       if (available() < size) {
         vector_->resize(vector_->size() + size);
       }
-      if (endian == std::endian::native || sizeof(ContainerValue) == 1) {
-        std::memcpy(&vector_->at(written_), std::data(container), size);
-        written_ += size;
-      } else {
-        for (const auto& value : container) {
-          write(value, endian);
-        }
-      }
+      std::memcpy(&vector_->at(written_), std::data(container), size);
+      written_ += size;
       Ensures(written_ <= vector_->size());
     }
     return size;
   }
 
   template <TriviallyCopyableStandardLayoutType Type>
-  auto write(const Type& value, const std::endian& endian = std::endian::native) -> std::size_t {
+  auto write(const Type& value) -> std::size_t {
     constexpr const std::size_t size = sizeof(value);
     if constexpr (size > 0) {
       if (available() < size) {
         vector_->resize(vector_->size() + size);
       }
-      if (endian == std::endian::native || sizeof(Type) == 1) {
-        std::memcpy(&vector_->at(written_), &value, size);
-      } else {
-        auto copy = toEndian(value, endian);
-        std::memcpy(&vector_->at(written_), &copy, size);
-      }
+      std::memcpy(&vector_->at(written_), &value, size);
       written_ += size;
       Ensures(written_ <= vector_->size());
     }
     return size;
+  }
+
+  template <TriviallyCopyableStandardLayoutContainer Container>
+  auto write(const Container& container, const std::endian& endian) -> std::size_t {
+    using ContainerValue = typename Container::value_type;
+    if (endian == std::endian::native || sizeof(ContainerValue) == 1) {
+      return write(container);
+    }
+    std::size_t size = 0;
+    for (const auto& value : container) {
+      size += write(value, endian);
+    }
+    return size;
+  }
+
+  template <TriviallyCopyableStandardLayoutType Type>
+  auto write(const Type& value, const std::endian& endian) -> std::size_t {
+    return write((endian == std::endian::native || sizeof(Type) == 1) ? value : toEndian(value, endian));
   }
 
 private:

@@ -23,45 +23,50 @@ public:
   void seek(std::size_t index);
 
   template <TriviallyCopyableStandardLayoutContainer Container>
-  auto write(const Container& container, const std::endian& endian = std::endian::native) -> std::size_t {
+  auto write(const Container& container) -> std::size_t {
     using ContainerValue = typename Container::value_type;
     const auto size = sizeof(ContainerValue) * container.size();
     if (size > 0) {
       if (available() < size) {
         throw NotEnoughSpace(size - available());
       }
-      if (endian == std::endian::native || sizeof(ContainerValue) == 1) {
-        std::memcpy(&buffer_[written_], std::data(container), size);
-        written_ += size;
-      } else {
-        for (const auto& value : container) {
-          using Type = typename Container::value_type;
-          static_assert(TriviallyCopyableStandardLayoutType<Type>);
-          write<Type>(value, endian);
-        }
-      }
+      std::memcpy(&buffer_[written_], std::data(container), size);
+      written_ += size;
       Ensures(written_ <= buffer_.size());
     }
     return size;
   }
 
   template <TriviallyCopyableStandardLayoutType Type>
-  auto write(const Type& value, const std::endian& endian = std::endian::native) -> std::size_t {
+  auto write(const Type& value) -> std::size_t {
     constexpr const std::size_t size = sizeof(value);
     if constexpr (size > 0) {
       if (available() < size) {
         throw NotEnoughSpace(size - available());
       }
-      if (endian == std::endian::native || sizeof(Type) == 1) {
-        std::memcpy(&buffer_[written_], &value, size);
-      } else {
-        auto copy = toEndian(value, endian);
-        std::memcpy(&buffer_[written_], &copy, size);
-      }
+      std::memcpy(&buffer_[written_], &value, size);
       written_ += size;
       Ensures(written_ <= buffer_.size());
     }
     return size;
+  }
+
+  template <TriviallyCopyableStandardLayoutContainer Container>
+  auto write(const Container& container, const std::endian& endian) -> std::size_t {
+    using ContainerValue = typename Container::value_type;
+    if (endian == std::endian::native || sizeof(ContainerValue) == 1) {
+      return write(container);
+    }
+    std::size_t size = 0;
+    for (const auto& value : container) {
+      size += write(value, endian);
+    }
+    return size;
+  }
+
+  template <TriviallyCopyableStandardLayoutType Type>
+  auto write(const Type& value, const std::endian& endian) -> std::size_t {
+    return write((endian == std::endian::native || sizeof(Type) == 1) ? value : toEndian(value, endian));
   }
 
 private:

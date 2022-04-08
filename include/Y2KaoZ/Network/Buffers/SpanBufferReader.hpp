@@ -22,39 +22,52 @@ public:
   void seek(std::size_t index);
 
   template <TriviallyCopyableStandardLayoutContainer Container>
-  inline auto read(Container& container, const std::endian& endian = std::endian::native) -> std::size_t {
+  inline auto read(Container& container) -> std::size_t {
     using ContainerValue = typename Container::value_type;
     const auto size = sizeof(ContainerValue) * container.size();
     if (size > 0) {
       if (available() < size) {
         throw NotEnoughData(size - available());
       }
-      if (endian == std::endian::native || sizeof(ContainerValue) == 1) {
-        std::memcpy(std::data(container), &buffer_[readed_], size);
-        readed_ += size;
-      } else {
-        for (auto& value : container) {
-          read(value, endian);
-        }
-      }
+      std::memcpy(std::data(container), &buffer_[readed_], size);
+      readed_ += size;
       Ensures(readed_ <= buffer_.size());
     }
     return size;
   }
 
   template <TriviallyCopyableStandardLayoutType Type>
-  inline auto read(Type& value, const std::endian& endian = std::endian::native) -> std::size_t {
+  inline auto read(Type& value) -> std::size_t {
     const auto size = sizeof(value);
     if (size > 0) {
       if (available() < size) {
         throw NotEnoughData(size - available());
       }
       std::memcpy(&value, &buffer_[readed_], size);
-      if (endian != std::endian::native && sizeof(Type) > 1) {
-        toNativeInplace(value, endian);
-      }
       readed_ += size;
       Ensures(readed_ <= buffer_.size());
+    }
+    return size;
+  }
+
+  template <TriviallyCopyableStandardLayoutContainer Container>
+  auto read(const Container& container, const std::endian& endian) -> std::size_t {
+    using ContainerValue = typename Container::value_type;
+    if (endian == std::endian::native || sizeof(ContainerValue) == 1) {
+      return read(container);
+    }
+    std::size_t size = 0;
+    for (const auto& value : container) {
+      size += read(value, endian);
+    }
+    return size;
+  }
+
+  template <TriviallyCopyableStandardLayoutType Type>
+  inline auto read(Type& value, const std::endian& endian) -> std::size_t {
+    std::size_t size = read(value);
+    if (endian != std::endian::native && sizeof(Type) > 1) {
+      toNativeInplace(value, endian);
     }
     return size;
   }
