@@ -23,4 +23,7 @@ concept JsonSerializable = requires(JsonSerializable_ jsonSerializable, boost::j
   { jsonDeserialize(jsonSerializable, json) } -> std::same_as<void>;
 };
 
+template <class ProtocolSerializable_>
+concept ProtocolSerializable = ByteSerializable<ProtocolSerializable_> && JsonSerializable<ProtocolSerializable_>;
+
 } // namespace Y2KaoZ::Network::Protocol
